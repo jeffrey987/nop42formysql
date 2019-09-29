@@ -1,4 +1,4 @@
-#################
+﻿#################
 ## Visual Studio
 #################
 
@@ -188,11 +188,3 @@ src/Presentation/Nop.Web/wwwroot/images/uploaded/*
 src/Presentation/Nop.Web/wwwroot/files/exportimport/*
 !src/Presentation/Nop.Web/wwwroot/files/exportimport/Index.htm
 src/packages/*
-/Presentation/Nop.Web/App_Data/dataSettings.json
-/Presentation/Nop.Web/Plugins
-/Presentation/Nop.Web/wwwroot/images/thumbs
-/Presentation/Nop.Web/App_Data/dataSettings1.json
-/Presentation/Nop.Web/App_Data/dataSettings3.json
-
-/Presentation/Nop.Web/App_Data/dataSettings1 - 副本.json
-/Presentation/Nop.Web/Themes/FullScreen.zip
