@@ -1,0 +1,102 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
+using Nop.Core;
+using Nop.Core.Domain.Customers;
+using Nop.Core.Domain.Orders;
+using Nop.Plugin.Widgets.Notification.Hubs;
+using Nop.Plugin.Widgets.Notification.Services;
+using Nop.Services.Configuration;
+using Nop.Services.Customers;
+using Nop.Services.Events;
+using Nop.Services.Helpers;
+using System;
+
+namespace Nop.Plugin.Widgets.Notification.Consumers
+{
+    public partial class CustomerRegisteredEventConsumer : IConsumer<CustomerRegisteredEvent>
+    {
+        #region Fields
+
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ISettingService _settingService;
+        private readonly IHubContext<NotificationHub, INotificationClient> _notificationHubContext;
+        //private readonly IShortMessageService _workflowMessageService;
+        private readonly ICustomerService _customerService;
+        private readonly IDateTimeHelper _dateTimeHelper;
+        private readonly IWorkContext _workContext;
+
+        #endregion
+
+        #region Ctor
+
+        public CustomerRegisteredEventConsumer(ISettingService settingService,
+            IHttpContextAccessor httpContextAccessor,
+            IHubContext<NotificationHub, INotificationClient> notificationHubContext,
+            ICustomerService customerService,
+            //IShortMessageService workflowMessageService,
+            IDateTimeHelper dateTimeHelper,
+            IWorkContext workContext)
+        {
+            _settingService = settingService;
+            _httpContextAccessor = httpContextAccessor;
+            _notificationHubContext = notificationHubContext;
+            _customerService = customerService;
+            //this._workflowMessageService = workflowMessageService;
+
+            _dateTimeHelper = dateTimeHelper;
+            _workContext = workContext;
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Handle shipping method deleted event
+        /// </summary>
+        /// <param name="eventMessage">Event message</param>
+        public void HandleEvent(CustomerRegisteredEvent eventMessage)
+        {
+            //var httpContext = _httpContextAccessor.HttpContext;
+            //var user = httpContext.User;
+            //_notificationHubContext.Clients.User(user.Identity.Name).SendAsync("OrderPaid", new { a ="a", b = "b"});
+            //var customers = _customerService.GetAllCustomers(customerRoleIds: new[]
+            //{
+            //    _customerService.GetCustomerRoleBySystemName(NopCustomerDefaults.AdministratorsRoleName).Id
+            //});
+            //foreach (var admin in customers)
+            //{
+            //    var user = _notificationHubContext.Clients.User(admin.Username);
+            //    if (user == null)
+            //        user = _notificationHubContext.Clients.User(admin.Email);
+            //    if (user != null)
+            //    {
+            //        user.ReceiveCustomerRegisteredMessage(
+            //            _customerService.GetCustomerFullName(_workContext.CurrentCustomer),
+            //            new
+            //            {
+            //                role = "admin",
+            //                customer = _customerService.GetCustomerFullName(eventMessage.Customer),
+            //                customerid = eventMessage.Customer.Id,
+            //                date = _dateTimeHelper.ConvertToUserTime(eventMessage.Customer.CreatedOnUtc, DateTimeKind.Utc).ToString("yyyy-MM-hh HH:mm:ss")
+            //            }
+            //        );
+            //    }
+            //}
+
+            _notificationHubContext.Clients.Group(NopCustomerDefaults.AdministratorsRoleName)
+                .ReceiveCustomerRegisteredMessage(
+                        _customerService.GetCustomerFullName(_workContext.CurrentCustomer),
+                        new
+                        {
+                            role = "admin",
+                            customer = _customerService.GetCustomerFullName(eventMessage.Customer),
+                            customerid = eventMessage.Customer.Id,
+                            date = _dateTimeHelper.ConvertToUserTime(eventMessage.Customer.CreatedOnUtc, DateTimeKind.Utc).ToString("yyyy-MM-hh HH:mm:ss"),
+                        }
+                );
+        }
+
+        #endregion
+    }
+}

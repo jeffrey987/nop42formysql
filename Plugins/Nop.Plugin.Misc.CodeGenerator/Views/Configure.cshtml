@@ -1,0 +1,241 @@
+﻿@model Nop.Plugin.Misc.CodeGenerator.Models.ConfigurationModel
+
+@using Nop.Plugin.Misc.CodeGenerator
+@using Nop.Plugin.Misc.CodeGenerator.Models
+
+@{
+    Layout = "_ConfigurePlugin";
+    //Html.AddCssFileParts("~/Plugins/Misc.SendinBlue/Content/styles.css", excludeFromBundle: true);
+}
+<style type="text/css">
+.workspace{display:flex}
+#tables{flex:1}
+#files{flex:4}
+#tables ul li{cursor:pointer}
+#tables ul li:hover{background-color:#ff0}
+#tables ul li.selected{background-color:#00b894}
+#entity-name-window .form-control{height:auto}
+.k-window-titlebar{height:1.5em}
+
+</style>
+@await Component.InvokeAsync("StoreScopeConfiguration")
+
+<form asp-controller="CodeGenerator" asp-action="Configure" method="post">
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+                <div class="workspace">
+                    <div id="tables">
+                        <ul>
+                            @foreach (var t in Model.Tables)
+                            {
+                                <li>
+                                    <span>@t.TableName </span>   
+                                    @if(!String.IsNullOrEmpty(t.Comment))
+                                    {
+                                        <span>@t.Comment</span>
+                                    }
+                            </li>
+                            }
+                        </ul>
+                    </div>
+                    <div id="files">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-info entity-name">Left</button>
+                            <button type="button" class="btn btn-info entity-name">Middle</button>
+                            <button type="button" class="btn btn-info entity-name">Right</button>
+                        </div>
+                        <div class="margin-t-10" style="font-family:Verdana,'Courier New', Geneva, Tahoma, sans-serif; font-size:13px">
+                        </div>
+                    </div>
+                </div> <!--end workspace -->
+            </div> <!--end panel-body -->
+            <script>
+
+            </script>
+            <div class="panel-footer">
+                <input type="submit" id="btnAddNewOption" class="btn btn-primary" value="@T("Plugins.Pickup.PickupInStore.AddNew")" onclick="javascript:OpenWindow('@(Url.Action("Create", "PickupInStore",  new { btnId = "btnRefresh", formId = "pickup-instore-form" }))', 800, 800, true); return false;" />
+                <input type="submit" id="btnRefresh" class="btn btn-default" style="display: none" />
+            </div>
+            <script>
+                $(document).ready(function () {
+                    $('#btnRefresh').click(function () {
+                        //refresh grid
+                        updateTable('#pickup-points-grid');
+
+                        //return false to don't reload a page
+                        return false;
+                    });
+                });
+            </script>
+        </div>
+    </div>
+</form>
+
+
+<div id="entity-name-window">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-popup">
+                <div class="panel-body">
+
+                    <form asp-controller="CodeGenerator" asp-action="GenerateCode" method="post">
+
+                        <div class="form-group">
+                            <div class="col-sm-3">
+                                <nop-label asp-for="TableName" />
+                            </div>
+                            <div class="col-sm-7">
+                                <nop-editor asp-for="TableName" />
+                                <span asp-validation-for="TableName"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @*<input asp-for="CurrentEntityName" type="hidden" />*@
+                            <div class="col-sm-3">
+                                <nop-label asp-for="CurrentEntityName" />
+                            </div>
+                            <div class="col-sm-7">
+                                <nop-editor asp-for="CurrentEntityName" />
+                                <span asp-validation-for="CurrentEntityName"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-3">
+                                <nop-label asp-for="PluralForms" />
+                            </div>
+                            <div class="col-sm-7">
+                                <nop-editor asp-for="PluralForms" />
+                                <span asp-validation-for="PluralForms"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-3">
+                                <nop-label asp-for="Camelization" />
+                            </div>
+                            <div class="col-sm-7">
+                                <nop-editor asp-for="Camelization" />
+                                <span asp-validation-for="Camelization"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <nop-label asp-for="GenerateCodeTypeId" />
+                            </div>
+                            <div class="col-md-8">
+                                <nop-select asp-for="GenerateCodeTypeId" asp-items="Model.AvailableGenerateCodeTypes" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-sm-7">
+                                <button type="submit" class="btn btn-default" id="generate-code-post-button">确定Ajax</button>
+                                <button type="button" class="btn btn-default" id="generate-code-button">确定Popup</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script asp-location="Footer">
+    $(document).ready(function () {
+        var myWindow = $("#entity-name-window"),
+            openButton = $(".entity-name");
+
+        openButton.click(function () {
+            myWindow.data("kendoWindow").center().open();
+            openButton.fadeOut();
+        });
+
+        function onClose() {
+            openButton.fadeIn();
+        }
+
+        myWindow.kendoWindow({
+            width: "600px",
+            title: "About Alvar Aalto",
+            visible: false,
+            actions: [
+                "Pin",
+                "Minimize",
+                "Maximize",
+                "Close"
+            ],
+            close: onClose
+        }).data("kendoWindow");
+
+        var lis = $('#tables').find('li');
+        lis.on('click', function (e) {
+            lis.siblings('.selected').removeClass('selected');
+            var li = $(e.target);
+            if (li.is('SPAN')) {
+                li = li.closest('li');
+            }
+            li.addClass('selected');
+            var entityTextBox = $('#@Html.IdFor(model => model.CurrentEntityName)');
+            const tableName = $.trim(li.find('SPAN').first().text());
+            entityTextBox.val(tableName);
+            $('#@Html.IdFor(model => model.TableName)').val(tableName);
+            $('#@Html.IdFor(model => model.PluralForms)').val(tableName);
+            $('#@Html.IdFor(model => model.Camelization)').val(tableName);
+        })
+
+        $('#generate-code-button').on('click', function () {
+
+            @*var postData = { "name": $('#@Html.IdFor(model => model.CurrentEntityName)').val() }
+            addAntiForgeryToken(postData)
+            $.ajax({
+                type: "POST",//POST GET
+                    url: '@(Url.Action("GetLookupCode", "Common"))',
+                    data: addAntiForgeryToken(postData)
+                })
+                .done(function (responseData) {
+                    $('#@Html.IdFor(model => model.CurrentEntityName)').val(responseData.code);
+                })
+                .fail(function (xhr, ajaxOptions, thrownError) {
+                    //alert(xhr.statusText + ',' + status + ', ' + error);
+                })
+                .always(function () {
+                });*@
+
+            //  $("#ddlregtype").find("option:selected").text();
+            var desc = $('#@Html.IdFor(model => model.GenerateCodeTypeId)').find("option:selected").text();
+            console.log(desc);
+            var url = '/Admin/CodeGenerator/' + desc + 'Popup/?btnId=btnRefresh&formId=code-form';
+            url += '&TableName=' + $('#@Html.IdFor(model => model.TableName)').val()
+            url += '&CurrentEntityName=' + $('#@Html.IdFor(model => model.CurrentEntityName)').val()
+            url += '&PluralForms=' + $('#@Html.IdFor(model => model.PluralForms)').val()
+            url += '&Pascalization=' + $('#@Html.IdFor(model => model.Pascalization)').val()
+            url += '&Camelization=' +  $('#@Html.IdFor(model => model.Camelization)').val()
+            console.log(url);
+            //switch (desc) {
+            //    case 'Interface':
+            //        OpenWindow(url, 800, 600, true);
+            //        break;
+            //    case 'Service':
+            //        OpenWindow(url, 800, 600, true);
+            //        break;
+            //    case 'Model':
+            //        console.log('Mangoes and papayas are $2.79 a pound.');
+            //        // expected output: "Mangoes and papayas are $2.79 a pound."
+            //        break;
+            //    case 'Controller':
+            //        console.log('Mangoes and papayas are $2.79 a pound.');
+            //        // expected output: "Mangoes and papayas are $2.79 a pound."
+            //        break;
+            //    default:
+            //        console.log('Sorry, we are out of ' + desc + '.');
+            //}
+            OpenWindow(url, 800, 600, true);
+        })
+    });
+</script>

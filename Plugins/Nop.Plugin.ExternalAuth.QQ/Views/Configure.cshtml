@@ -1,0 +1,40 @@
+﻿@model Nop.Plugin.ExternalAuth.QQ.Models.ConfigurationModel
+@{
+    Layout = "_ConfigurePlugin";
+}
+@inject Nop.Core.IWebHelper webHelper
+
+<form asp-controller="QQAuthentication" asp-action="Configure" method="post">
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <p>
+                    详情请联系QQ：954219492，或者加入QQ群：169366609，邮件请发到：954219492@qq.com
+                </p>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <nop-label asp-for="ClientId" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="ClientId" />
+                        <span asp-validation-for="ClientId"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <nop-label asp-for="ClientSecret" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="ClientSecret" />
+                        <span asp-validation-for="ClientSecret"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-9 col-md-offset-3">
+                        <input type="submit" name="save" class="btn bg-primary" value="@T("Admin.Common.Save")" />
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div> 
+</form>

@@ -1,0 +1,11 @@
+﻿{
+  "Group": "ExternalAuth methods",
+  "FriendlyName": "微信登录",
+  "SystemName": "ExternalAuth.WeChat",
+  "Version": "1.00",
+  "SupportedVersions": [ "4.20" ],
+  "Author": "qq_954219492",
+  "DisplayOrder": 5,
+  "FileName": "Nop.Plugin.ExternalAuth.WeChat.dll",
+  "Description": "此插件使程序支持WeChat登录 (详情请联系QQ：954219492，或者加入QQ群：169366609，邮件请发到：954219492@qq.com)"
+}

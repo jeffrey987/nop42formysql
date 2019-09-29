@@ -1,0 +1,105 @@
+@model Nop.Plugin.Misc.CodeGenerator.Models.TableSchemaModel
+@*Microsoft.EntityFrameworkCore.Scaffolding.Metadata.DatabaseTable*@
+@using Humanizer;
+
+@{
+    //Layout = "_AdminPopupLayout";
+
+    Layout = "";
+
+    //page title
+    ViewBag.Title = "接口"; // T("Admin.Address.AddressAttributes.Values.EditValueDetails").Text;
+                          //Pascaliz
+                          //var entityName = Humanizer.InflectorExtensions.Pascalize(Model.Name);
+                          //var entityName = Model.Name.Pascalize();
+                          //var variableName = Model.Name.Camelize();
+                          //var plurality = Model.Name.Pluralize();
+}
+
+<pre>
+
+using System.Collections.Generic;
+using Nop.Core;
+using Nop.Core.Domain.Catalog;
+
+namespace Nop.Services.Catalog
+{
+    /// &lt;summary&gt;
+    /// @(Model.CurrentEntityName) service interface
+    /// &lt;/summary&gt;
+    public partial interface I@(Model.CurrentEntityName)Service
+    {
+        #region @(Model.CurrentEntityName)
+
+        /// &lt;summary&gt;
+        /// Gets a @(Model.CurrentEntityName)
+        /// &lt;/summary&gt;
+        /// &lt;param name="@(Model.Camelization)Id"&gt;The @(Model.CurrentEntityName) identifier&lt;/param&gt;
+        /// &lt;returns&gt;@(Model.CurrentEntityName)&lt;/returns&gt;
+        @(Model.CurrentEntityName) Get@(Model.CurrentEntityName)ById(int @(Model.Camelization)Id);
+
+        /// &lt;summary&gt;
+        /// Gets @(Model.CurrentEntityName)
+        /// &lt;/summary&gt;
+        /// &lt;param name="pageIndex"&gt;Page index&lt;/param&gt;
+        /// &lt;param name="pageSize"&gt;Page size&lt;/param&gt;
+        /// &lt;returns&gt;Specification attributes&lt;/returns&gt;
+        IPagedList&lt;@(Model.CurrentEntityName)&gt; Get@(Model.CurrentEntityName)s(int pageIndex = 0, int pageSize = int.MaxValue);
+
+        /// &lt;summary&gt;
+        /// Gets @(Model.CurrentEntityName) that have options
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;Specification attributes that have available options&lt;/returns&gt;
+        IList&lt;@(Model.CurrentEntityName)&gt; Get@(Model.CurrentEntityName)sWithOptions();
+
+        /// &lt;summary&gt;
+        /// Deletes a @(Model.CurrentEntityName)
+        /// &lt;/summary&gt;
+        /// &lt;param name="@(Model.Camelization)"&gt;The @(Model.CurrentEntityName)&lt;/param&gt;
+        void Delete@(Model.CurrentEntityName)(@(Model.CurrentEntityName) @(Model.Camelization));
+
+        /// &lt;summary&gt;
+        /// Inserts a @(Model.CurrentEntityName)
+        /// &lt;/summary&gt;
+        /// &lt;param name="@(Model.Camelization)"&gt;The @(Model.CurrentEntityName)&lt;/param&gt;
+        void Insert@(Model.CurrentEntityName)(@(Model.CurrentEntityName) @(Model.Camelization));
+
+        /// &lt;summary&gt;
+        /// Updates the @(Model.CurrentEntityName)
+        /// &lt;/summary&gt;
+        /// &lt;param name="@(Model.Camelization)"&gt;The @(Model.CurrentEntityName)&lt;/param&gt;
+        void Update@(Model.CurrentEntityName)(@(Model.CurrentEntityName) @(Model.Camelization));
+
+        #endregion
+        
+    }
+}
+
+</pre>
+
+<pre>
+@*@foreach (var column in Model.Tables[0].col)
+{
+    &lt;strong&gt;@column.Name&lt;/strong&gt;  @column.StoreType
+
+}*@
+
+</pre>
+
+@*&lt;form asp-controller="Department" asp-action="CreatePopup"
+          asp-route-btnId="@Context.Request.Query["btnId"]"
+          asp-route-formId="@Context.Request.Query["formId"]"&gt;
+        &lt;div class="content-header clearfix"&gt;
+            &lt;h1 class="pull-left"&gt;
+                添加新部门
+            &lt;/h1&gt;
+            &lt;div class="pull-right"&gt;
+                &lt;button type="submit" name="save" class="btn bg-blue"&gt;
+                    &lt;i class="fa fa-floppy-o"&gt;&lt;/i&gt;
+                    @T("Admin.Common.Save")
+                &lt;/button&gt;
+                @await Component.InvokeAsync("AdminWidget", new { widgetZone = AdminWidgetZones.AddressAttributeValueDetailsButtons, additionalData = Model })
+            &lt;/div&gt;
+        &lt;/div&gt;
+        @await Html.PartialAsync("_CreateOrUpdate", Model)
+    &lt;/form&gt;*@

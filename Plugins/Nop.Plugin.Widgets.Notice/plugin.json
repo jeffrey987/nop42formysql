@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Widgets",
+  "FriendlyName": "Notification",
+  "SystemName": "Widgets.Notification",
+  "Version": "1.00",
+  "SupportedVersions": [ "4.20" ],
+  "Author": "nopCommerce team",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Widgets.Notification.dll",
+  "Description": "本插件用于网站有新会员注册、新订单、新退款请求时，通知控制台"
+}

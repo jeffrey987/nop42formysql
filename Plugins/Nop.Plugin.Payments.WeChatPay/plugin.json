@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Payment methods",
+  "FriendlyName": "微信支付",
+  "SystemName": "Payments.WeChatPay",
+  "Version": "1.00",
+  "SupportedVersions": [ "4.20" ],
+  "Author": "954219492@qq.com",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Payments.WeChatPay.dll",
+  "Description": "微信支付，支持付款码、Native、H5支付,有问题请联系QQ，954219492@qq.com"
+}

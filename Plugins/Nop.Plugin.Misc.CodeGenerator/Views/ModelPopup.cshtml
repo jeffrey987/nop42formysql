@@ -1,0 +1,100 @@
+@model Nop.Plugin.Misc.CodeGenerator.Models.TableSchemaModel
+@*Microsoft.EntityFrameworkCore.Scaffolding.Metadata.DatabaseTable*@
+@using Humanizer;
+
+@{
+    //Layout = "_AdminPopupLayout";
+
+    Layout = "";
+
+    //page title
+    ViewBag.Title = "接口"; // T("Admin.Address.AddressAttributes.Values.EditValueDetails").Text;
+                          //Pascaliz
+                          //var entityName = Humanizer.InflectorExtensions.Pascalize(Model.Name);
+                          //var entityName = Model.Name.Pascalize();
+                          //var variableName = Model.Name.Camelize();
+                          //var plurality = Model.Name.Pluralize();
+}
+
+<pre>
+using System.Collections.Generic;
+using Nop.Web.Framework.Models;
+using Nop.Web.Framework.Mvc.ModelBinding;
+
+namespace Nop.Web.Areas.Admin.Models.Catalog
+{
+    /// &lt;summary&gt;
+    /// Represents a specification attribute model
+    /// &lt;/summary&gt;
+    public partial class @(Model.CurrentEntityName)Model : BaseNopEntityModel, ILocalizedModel&lt;@(Model.CurrentEntityName)LocalizedModel&gt;
+    {
+    #region Ctor
+
+    public @(Model.CurrentEntityName)Model()
+    {
+    Locales = new List&lt;@(Model.CurrentEntityName)LocalizedModel&gt;();
+    // @(Model.CurrentEntityName)OptionSearchModel = new @(Model.CurrentEntityName)OptionSearchModel();
+    // @(Model.CurrentEntityName)ProductSearchModel = new @(Model.CurrentEntityName)ProductSearchModel();
+    }
+
+    #endregion
+
+    #region Properties
+
+    @foreach (var col in Model.Columns)
+    {
+        var attr = $"[NopResourceDisplayName(\"Admin.xxxxxx.{Model.PluralForms}.Fields.{col.ColumnName}\")]";
+        var p = $"public string {col.ColumnName} {{ get; set; }}";
+        @(attr + System.Environment.NewLine + p + System.Environment.NewLine)
+
+    }
+
+@foreach (var col in Model.Columns)
+{
+<text>[NopResourceDisplayName("Admin.vvvvv.@(Model.CurrentEntityName)s.Fields.@col.ColumnName")]</text>
+<text>public int @col.ColumnName {get;set;}
+</text>
+}
+    [NopResourceDisplayName("Admin..@(Model.CurrentEntityName)s.Fields.Name")]
+    public string Name { get; set; }
+
+    [NopResourceDisplayName("Admin.Catalog.Attributes.@(Model.CurrentEntityName)s.Fields.DisplayOrder")]
+    public int DisplayOrder {get;set;}
+
+    // public IList&lt;@(Model.CurrentEntityName)LocalizedModel&gt; Locales { get; set; }
+
+    // public @(Model.CurrentEntityName)OptionSearchModel @(Model.CurrentEntityName)OptionSearchModel { get; set; }
+
+    // public @(Model.CurrentEntityName)ProductSearchModel @(Model.CurrentEntityName)ProductSearchModel { get; set; }
+
+#endregion
+}
+    }
+    </pre>
+
+<pre>
+    @*@foreach (var column in Model.Tables[0].col)
+        {
+            &lt;strong&gt;@column.Name&lt;/strong&gt;  @column.StoreType
+
+        }*@
+
+ </pre>
+
+    @*&lt;form asp-controller="Department" asp-action="CreatePopup"
+              asp-route-btnId="@Context.Request.Query["btnId"]"
+              asp-route-formId="@Context.Request.Query["formId"]"&gt;
+            &lt;div class="content-header clearfix"&gt;
+                &lt;h1 class="pull-left"&gt;
+                    添加新部门
+                &lt;/h1&gt;
+                &lt;div class="pull-right"&gt;
+                    &lt;button type="submit" name="save" class="btn bg-blue"&gt;
+                        &lt;i class="fa fa-floppy-o"&gt;&lt;/i&gt;
+                        @T("Admin.Common.Save")
+                    &lt;/button&gt;
+                    @await Component.InvokeAsync("AdminWidget", new { widgetZone = AdminWidgetZones.AddressAttributeValueDetailsButtons, additionalData = Model })
+                &lt;/div&gt;
+            &lt;/div&gt;
+            @await Html.PartialAsync("_CreateOrUpdate", Model)
+        &lt;/form&gt;*@

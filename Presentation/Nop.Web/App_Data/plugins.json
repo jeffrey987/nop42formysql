@@ -1,0 +1,11 @@
+﻿{
+  "InstalledPluginNames": [
+    "Misc.CodeGenerator",
+    "Payments.Manual",
+    "Shipping.FixedByWeightByTotal",
+    "Widgets.NivoSlider"
+  ],
+  "PluginNamesToUninstall": [],
+  "PluginNamesToDelete": [],
+  "PluginNamesToInstall": []
+}
