@@ -3,8 +3,10 @@ using Nop.Web.Framework.Infrastructure.Extensions;
 
 namespace Nop.Plugin.Api
 {
+    using IdentityServer4.EntityFramework;
     using IdentityServer4.EntityFramework.DbContexts;
     using IdentityServer4.EntityFramework.Entities;
+    using IdentityServer4.EntityFramework.Options;
     using IdentityServer4.Hosting;
     using IdentityServer4.Models;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -86,8 +88,7 @@ namespace Nop.Plugin.Api
             // This needs to be called here because in the plugin install method identity server is not yet registered.
             ApplyIdentityServerMigrations(app);
 
-            SeedData(app);
-
+            // SeedData(app);
 
             var rewriteOptions = new RewriteOptions()
                 .AddRewrite("oauth/(.*)", "connect/$1", true)
@@ -178,13 +179,18 @@ namespace Nop.Plugin.Api
 
             var migrationsAssembly = typeof(ApiStartup).GetTypeInfo().Assembly.GetName().Name;
 
-            services.AddIdentityServer()
+            services.AddIdentityServer(options =>
+            {
+                options.UserInteraction.LoginUrl = "/login";
+                options.UserInteraction.LogoutUrl = "/logout";
+            })
                 .AddSigningCredential(signingKey)
                 .AddConfigurationStore(options =>
                 {
                     //options.ConfigureDbContext = builder =>
                     //    builder.UseSqlServer(connectionStringFromNop,
                     //        sql => sql.MigrationsAssembly(migrationsAssembly));
+                    ChangeConfigurationTableName(options);
                     switch (dataSettings.DataProvider)
                     {
                         case DataProviderType.Unknown:
@@ -194,9 +200,13 @@ namespace Nop.Plugin.Api
                                     sql => sql.MigrationsAssembly(migrationsAssembly));
                             break;
                         case DataProviderType.MySql:
+                            //options.Client = 
                             options.ConfigureDbContext = builder =>
+                            {
                                 builder.UseMySql(connectionStringFromNop,
                                     sql => sql.MigrationsAssembly(migrationsAssembly));
+                            };
+      
                             break;
                         case DataProviderType.PostgreSql:
                             break;
@@ -206,11 +216,15 @@ namespace Nop.Plugin.Api
                 })
                 .AddOperationalStore(options =>
                 {
-                    
+                    //options.ConfigureDbContext = builder =>
+                    //    builder.UseSqlServer(connectionStringFromNop,
+                    //        sql => sql.MigrationsAssembly(migrationsAssembly));
+                    ChangeOperationalTableName(options);
                     switch (dataSettings.DataProvider)
                     {
                         case DataProviderType.Unknown:
                         case DataProviderType.SqlServer:
+                            
                             options.ConfigureDbContext = builder =>
                                 builder.UseSqlServer(connectionStringFromNop,
                                     sql => sql.MigrationsAssembly(migrationsAssembly));
@@ -232,16 +246,47 @@ namespace Nop.Plugin.Api
                 .AddEndpoint<TokenEndpoint>("Token", "/oauth/token");
         }
 
+        private void ChangeConfigurationTableName(ConfigurationStoreOptions options)
+        {
+            options.ApiResource = new TableConfiguration(IdentityServerTableNames.ApiResource.ApiResources);
+            options.ApiScope = new TableConfiguration(IdentityServerTableNames.ApiResource.ApiScopes);
+            options.ApiClaim = new TableConfiguration(IdentityServerTableNames.ApiResource.ApiClaims);
+            options.ApiScopeClaim = new TableConfiguration(IdentityServerTableNames.ApiResource.ApiScopeClaims);
+            options.ApiResourceProperty = new TableConfiguration(IdentityServerTableNames.ApiResource.ApiResourceProperty);
+            options.ApiSecret = new TableConfiguration(IdentityServerTableNames.ApiResource.ApiSecrets);
+
+            options.IdentityResource = new TableConfiguration(IdentityServerTableNames.IdentityResource.IdentityResources);
+            options.IdentityClaim = new TableConfiguration(IdentityServerTableNames.IdentityResource.IdentityClaims);
+            options.IdentityResourceProperty = new TableConfiguration(IdentityServerTableNames.IdentityResource.IdentityResourceProperty);
+
+            options.Client = new TableConfiguration(IdentityServerTableNames.Client.Clients);
+            options.ClientClaim = new TableConfiguration(IdentityServerTableNames.Client.ClientClaims);
+            options.ClientCorsOrigin = new TableConfiguration(IdentityServerTableNames.Client.ClientCorsOrigins);
+            options.ClientGrantType = new TableConfiguration(IdentityServerTableNames.Client.ClientGrantTypes);
+            options.ClientIdPRestriction = new TableConfiguration(IdentityServerTableNames.Client.ClientIdPRestrictions);
+            options.ClientPostLogoutRedirectUri = new TableConfiguration(IdentityServerTableNames.Client.ClientPostLogoutRedirectUris);
+            options.ClientProperty = new TableConfiguration(IdentityServerTableNames.Client.ClientProperties);
+            options.ClientRedirectUri = new TableConfiguration(IdentityServerTableNames.Client.ClientRedirectUris);
+            options.ClientScopes = new TableConfiguration(IdentityServerTableNames.Client.ClientScopes);
+            options.ClientSecret = new TableConfiguration(IdentityServerTableNames.Client.ClientSecrets);
+        }
+        private void ChangeOperationalTableName(OperationalStoreOptions options)
+        {
+            options.DeviceFlowCodes = new TableConfiguration(IdentityServerTableNames.DeviceFlowCode.DeviceFlowCodes);
+            options.PersistedGrants = new TableConfiguration(IdentityServerTableNames.PersistedGrant.PersistedGrants);
+        }
+
+
         private void ApplyIdentityServerMigrations(IApplicationBuilder app)
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 // the database.Migrate command will apply all pending migrations and will create the database if it is not created already.
                 var persistedGrantContext = serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
-                persistedGrantContext.Database.Migrate();
+                // persistedGrantContext.Database.Migrate();
 
                 var configurationContext = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-                configurationContext.Database.Migrate();
+                // configurationContext.Database.Migrate();
             }
         }
 
@@ -270,7 +315,7 @@ namespace Nop.Plugin.Api
 
                     configurationContext.SaveChanges();
 
-                    TryRunUpgradeScript(configurationContext);
+                    //TryRunUpgradeScript(configurationContext);
                 }
             }
         }

@@ -1,0 +1,5 @@
+﻿{
+  "DataProvider": "sqlserver",
+  "DataConnectionString": "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=nop42;Integrated Security=True;Persist Security Info=False",
+  "RawDataSettings": {}
+}

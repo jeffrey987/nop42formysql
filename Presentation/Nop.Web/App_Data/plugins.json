@@ -1,6 +1,9 @@
 ﻿{
   "InstalledPluginNames": [
-    "Widgets.NivoSlider"
+    "Payments.Manual",
+    "Shipping.FixedByWeightByTotal",
+    "Widgets.NivoSlider",
+    "Nop.Plugin.Api"
   ],
   "PluginNamesToUninstall": [],
   "PluginNamesToDelete": [],

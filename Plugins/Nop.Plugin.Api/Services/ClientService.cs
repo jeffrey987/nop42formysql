@@ -43,8 +43,16 @@ namespace Nop.Plugin.Api.Services
                 throw new ArgumentNullException(nameof(model));
             }
 
+            var id = 1;
+            var clients = GetAllClients();
+            if(clients != null && clients.Count > 0)
+            {
+                id = clients.Max(c => c.Id) + 1;
+            }
+
             var client = new Client
             {
+                Id = id,
                 ClientId = model.ClientId,
                 Enabled = model.Enabled,
                 ClientName = model.ClientName,
@@ -82,7 +90,22 @@ namespace Nop.Plugin.Api.Services
                 {
                     Client = client,
                     Scope = "nop_api"
-                }
+                },
+                new ClientScope
+                {
+                    Client = client,
+                    Scope = IdentityServerConstants.StandardScopes.OpenId,
+                },
+                new ClientScope
+                {
+                    Client = client,
+                    Scope = IdentityServerConstants.StandardScopes.Profile,
+                },
+                new ClientScope
+                {
+                    Client = client,
+                    Scope = IdentityServerConstants.StandardScopes.OfflineAccess,
+                },
             };
 
             client.Claims = new List<ClientClaim>

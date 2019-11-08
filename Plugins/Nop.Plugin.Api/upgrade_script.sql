@@ -37,38 +37,38 @@ BEGIN TRANSACTION;
 		   NULL as [Description],
 		   1 as FrontChannelLogoutSessionRequired,
 		   NULL as FrontChannelLogoutUri,
-		   NULL as PairWiseSubjectSalt from API_Clients
+		   NULL as PairWiseSubjectSalt from API_Clients;
 
 	-- ClientClaims --
 	Insert into ClientClaims 
-	Select Id as ClientId, 'sub' as [Type], ClientId as [Value] from Clients
+	Select Id as ClientId, 'sub' as [Type], ClientId as [Value] from Clients;
 
 	Insert into ClientClaims 
-	Select Id as ClientId, 'name' as [Type], [ClientName] as [Value] from Clients
+	Select Id as ClientId, 'name' as [Type], [ClientName] as [Value] from Clients;
 
 	-- ClientGrantTypes --
 	Insert into ClientGrantTypes
-	Select Id as ClientId, 'authorization_code' as GrantType from Clients
+	Select Id as ClientId, 'authorization_code' as GrantType from Clients;
 
 	Insert into ClientGrantTypes
-	Select Id as ClientId, 'refresh_token' as GrantType from Clients
+	Select Id as ClientId, 'refresh_token' as GrantType from Clients;
 
 	Insert into ClientGrantTypes
-	Select Id as ClientId, 'urn:ietf:params:oauth:grant-type:jwt-bearer' as GrantType from Clients
+	Select Id as ClientId, 'urn:ietf:params:oauth:grant-type:jwt-bearer' as GrantType from Clients;
 
 	-- ClientRedirectUris --
 	Insert into ClientRedirectUris
 	Select Client_id as ClientId, CallbackUrl as RedirectUri from (Select Clients.Id as Client_id, Clients.ClientId, CallbackUrl from Clients
-																   inner join API_Clients on Clients.ClientId = API_Clients.ClientId) as JoinedClients
+																   inner join API_Clients on Clients.ClientId = API_Clients.ClientId) as JoinedClients;
 	-- ClientScopes --
 	Insert into ClientScopes
-	Select Id as ClientId, 'nop_api' as Scope from Clients
+	Select Id as ClientId, 'nop_api' as Scope from Clients;
 
 	-- ClientSecrets --
 	Insert into ClientSecrets
 	Select Client_id as ClientId, ClientSecret as [Description], NULL as Expiration, 'SharedSecret' as [Type], ClientSecret as [Value] 
 	from (Select Clients.Id as Client_id, Clients.ClientId, ClientSecret from Clients
-		  inner join API_Clients on Clients.ClientId = API_Clients.ClientId) as JoinedClients
+		  inner join API_Clients on Clients.ClientId = API_Clients.ClientId) as JoinedClients;
 
 	drop table API_Clients;
 COMMIT;  

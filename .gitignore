@@ -1,4 +1,4 @@
-﻿#################
+#################
 ## Visual Studio
 #################
 
@@ -181,7 +181,6 @@ src/Presentation/Nop.Web/wwwroot/bundles/*
 !src/Presentation/Nop.Web/wwwroot/bundles/Index.htm
 src/Presentation/Nop.Web/wwwroot/db_backups/*.bak
 !src/Presentation/Nop.Web/wwwroot/db_backups/Index.htm
-!src/Presentation/Nop.Web/wwwroot/images/thumbs
 src/Presentation/Nop.Web/wwwroot/images/thumbs/*
 !src/Presentation/Nop.Web/wwwroot/images/thumbs/placeholder.txt
 src/Presentation/Nop.Web/wwwroot/images/uploaded/*
@@ -189,3 +188,12 @@ src/Presentation/Nop.Web/wwwroot/images/uploaded/*
 src/Presentation/Nop.Web/wwwroot/files/exportimport/*
 !src/Presentation/Nop.Web/wwwroot/files/exportimport/Index.htm
 src/packages/*
+/Presentation/Nop.Web/App_Data/dataSettings.json
+/Presentation/Nop.Web/Plugins
+/Presentation/Nop.Web/wwwroot/images/thumbs
+/Presentation/Nop.Web/App_Data/dataSettings1.json
+/Presentation/Nop.Web/App_Data/dataSettings3.json
+
+/Presentation/Nop.Web/App_Data/dataSettings1 - 副本.json
+/Presentation/Nop.Web/Themes/FullScreen.zip
+/Plugins/Nop.Plugin.Api/nopCommerce-Api-SampleApplication-master (1).zip
